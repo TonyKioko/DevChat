@@ -4,7 +4,7 @@ import {combineReducers} from 'redux'
 
 const initalState = {
     currentUser:null,
-    isLoading:false
+    isLoading:true
 }
 
 const user_reducer = (state=initalState,action) => {
@@ -12,7 +12,7 @@ const user_reducer = (state=initalState,action) => {
         case actionTypes.SET_USER:
             return {
                 currentUser:action.payload.currentUser,
-                isLoading:true
+                isLoading:false
             }
 
         default:
