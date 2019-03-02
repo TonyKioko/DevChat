@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Grid,Form,Segment,Button,Header,Message,Icon} from'semantic-ui-react'
+import {Grid,Form,Segment,Button,Header,Message,Icon} from 'semantic-ui-react'
 import {Link} from 'react-router-dom'
 import firebase from '../../firebase'
 
@@ -9,7 +9,8 @@ class Register extends Component {
       username:'',
       email:'',
       password:'',
-      passwordConfirmation:''
+      passwordConfirmation:'',
+      errors:[]
 
     }
 
@@ -19,8 +20,42 @@ class Register extends Component {
       [event.target.name]:event.target.value
     })  
     }
+    isFormEmpty = ({username,email,password,passwordConfirmation}) => {
+      return !username.length || !email.length || !password.length || !passwordConfirmation.length
+    }
+    isPasswordValid = ({password,passwordConfirmation}) => {
+      if (password.length < 6 || passwordConfirmation <6){
+        return false
+      } else if (password !== passwordConfirmation){
+        return false
 
+      } else {
+        return true
+      }
+    }
+    isFormValid= () =>{
+      let errors = [];
+      let error;
+      if (this.isFormEmpty(this.state)){
+        error={message:'Fill in all fields'}
+        this.setState({errors:errors.concat(error)})
+        return false
+
+      } else if(!this.isPasswordValid(this.state)) {
+
+        error ={message:"Password is invalid"}
+        this.setState({errors:errors.concat(error)})
+        return false
+
+
+      } else {
+        return true
+      }
+    }
+
+    displayErrors = (errors) => errors.map((error,i) => <p key={i}>{error.message}</p> ) 
       handleSubmit=(event)=>{
+        if (this.isFormValid()){
         event.preventDefault()
         firebase
           .auth()
@@ -32,10 +67,10 @@ class Register extends Component {
             console.errror(err)
           })
       }
-
+    }
   render() {
 
-    const { username,email,password,passwordConfirmation}=this.state;
+    const { username,email,password,passwordConfirmation,errors}=this.state;
 
     return (
       <div>
@@ -64,6 +99,12 @@ class Register extends Component {
                     </Segment>
 
                 </Form>
+                {this.state.errors.length > 0 && (
+                  <Message error>
+
+<h3>Error</h3>{this.displayErrors(errors)}
+                  </Message>
+                )}
 
 <Message>Already a user?
     <Link to="/login">Login</Link>
