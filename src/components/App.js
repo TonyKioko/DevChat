@@ -6,13 +6,14 @@ import SidePanel from '../SidePanel/SidePanel';
 import Messages from '../Messages/Messages';
 import MetaPanel from '../MetaPanel/MetaPanel';
 
-class App extends Component {
-  render() {
+import {connect} from 'react-redux'
+
+const App = ({currentUser})=> {
     return (
      <Grid columns="equal" className="app" style={{background:'#eee'}}>
 
       <ColorPanel />
-      <SidePanel />
+      <SidePanel currentUser={currentUser} />
 <Grid.Column style={{marginLeft:320}}>
 
 <Messages />
@@ -30,6 +31,7 @@ class App extends Component {
      </Grid>
     );
   }
+const mapStateToProps = state => {
+  currentUser:state.user.currentUser
 }
-
-export default App;
+export default connect(mapStateToProps)(App);
